@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  web1:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://user:password@db:5432/db_name
+
+  web2:
+    build: .
+    ports:
+      - "5001:5000"  # Use a different host port for the second instance
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://user:password@db:5432/db_name
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db_name
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
